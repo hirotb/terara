@@ -21,6 +21,12 @@
 <body>
 <div id="app">
     <h1>{{ greeting }}</h1>
+    <h3>使用方法</h3>
+    <p>
+        Export時に現れるOPMLタグを選択してください。</br>
+        そのなかに入っているHTMLっぽいテキストを全部入力欄にぶちこんでください。</br>
+        そしたら結果がその下に出ます。
+    </p>
     <h3>入力欄</h3>
     <textarea id="xml_input" v-model="message" v-bind:placeholder="placeholder_mess" v-on:change="extract_hierarchy"></textarea>
     <h3>最下層抽出欄</h3>
@@ -47,7 +53,6 @@
         },
         created: function () {
             // `this` は vm インスタンスを指します
-            console.log('a is:aaaaa ');
 
             let random_message = ['入力すると孕むよ','超乳最高だね','おにんにん','あなたがおとしたのはこの金の原稿ですか？それとも銀の原稿ですか？'];
             this.placeholder_mess = random_message[Math.floor(Math.random() * random_message.length)];
