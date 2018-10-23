@@ -1,52 +1,91 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Welcome to Vue</title>
-  <script src="https://unpkg.com/vue"></script>
+    <meta charset="UTF-8">
+    <title>Welcome to Vue</title>
+    <script src="https://unpkg.com/vue"></script>
+    <style>
+
+        textarea {
+            width: 800px;
+            height: 300px;
+        }
+
+        ul#last_hierarchies {
+            border-style: solid;
+            border-width: 1px;
+            padding: 3px;
+        }
+    </style>
 </head>
 <body>
-  <div id="app">
-    <img src="https://vuejs.org/images/logo.png" alt="Vue logo">
+<div id="app">
     <h1>{{ greeting }}</h1>
-    <ul>
-      <li>
-        To learn more about Vue, visit
-        <a :href="docsURL" target="_blank">
-          {{ humanizeURL(docsURL) }}
-        </a>
-      </li>
-      <li>
-        For live help with simple questions, check out
-        <a :href="discordURL" target="_blank">
-          the Discord chat
-        </a>
-      </li>
-      <li>
-        For more complex questions, post to
-        <a :href="forumURL" target="_blank">
-          the forum
-        </a>
-      </li>
+    <h3>入力欄</h3>
+    <textarea id="xml_input" v-model="message" v-bind:placeholder="placeholder_mess" v-on:change="extract_hierarchy"></textarea>
+    <h3>最下層抽出欄</h3>
+    <ul id="last_hierarchies">
+        <li v-for="item in last_items">
+            {{ item }}
+        </li>
     </ul>
-  </div>
 
-  <script>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+
+<script>
     var app = new Vue({
-      el: '#app',
-      data: {
-        greeting: 'Welcome to your Vue.js app!',
-        docsURL: 'http://vuejs.org/guide/',
-        discordURL: 'https://chat.vuejs.org',
-        forumURL: 'http://forum.vuejs.org/'
-      },
-      methods: {
-        humanizeURL: function (url) {
-          return url
-            .replace(/^https?:\/\//, '')
-            .replace(/\/$/, '')
+        el: '#app',
+        data: {
+            placeholder_mess: "",
+            message: "",
+            greeting: "てららアプリです。",
+            last_items: [],
+
+        },
+        created: function () {
+            // `this` は vm インスタンスを指します
+            console.log('a is:aaaaa ');
+
+            let random_message = ['入力すると孕むよ','超乳最高だね','おにんにん','あなたがおとしたのはこの金の原稿ですか？それとも銀の原稿ですか？'];
+            this.placeholder_mess = random_message[Math.floor(Math.random() * random_message.length)];
+        },
+        methods: {
+            extract_hierarchy: function (event) {
+
+//結果初期化
+                this.last_items = [];
+                let myXML = null;
+                try {
+                    myXML = $.parseXML(this.message);
+                } catch (e) {
+                    let error1 = "入力がopml(xml)じゃない";
+                    console.log(error1);
+                    alert(error1);
+                    return;
+                }
+// パースに成功した
+
+                // 出力テスト
+                console.log(myXML);
+                //子供を持たないという疑似要素empty
+                let outlines = $(myXML).find("outline:empty");
+                //jqueryメソッドのなかでは、vuejsのメソッドpushは使えない。
+
+                for (let each_out of outlines) {
+
+                    let last_item = $(each_out).attr('text');
+                    if ($.isEmptyObject(last_item)) {
+                        continue;
+                    }
+                    this.last_items.push(last_item);
+                }
+
+            }
         }
-      }
     })
-  </script>
+</script>
 </body>
 </html>
